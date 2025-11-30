@@ -92,7 +92,7 @@ export default function Hero() {
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-primary leading-tight">
                 Merci Saint-Esprit
               </h1>
-              <div className="flex justify-center lg:justify-start w-full lg:pl-[60%]">
+              <div className="flex justify-center lg:justify-start w-full pl-[48%] sm:pl-[55%] lg:pl-[60%]">
                 <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-rose-500 mt-1">
                   Église
                 </p>
