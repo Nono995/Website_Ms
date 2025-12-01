@@ -1,40 +1,44 @@
 'use client'
 
+
 import { motion } from 'framer-motion'
 import { Star } from 'lucide-react'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface Testimonial {
+  id: string
+  name: string
+  role: string
+  text: string
+  rating: number
+  image_url: string
+}
 
 export default function Testimonials() {
-  const testimonials = [
-    {
-      name: 'Claire Martin',
-      role: 'Membre depuis 3 ans',
-      text: 'Grace & Faith a changé ma vie. J\'ai trouvé ici une communauté chaleureuse et un enseignement qui me parle vraiment.',
-      rating: 5,
-      image: '/images/img1.jpg',
-    },
-    {
-      name: 'Thomas Lefevre',
-      role: 'Nouveau Membre',
-      text: 'Dès mon premier dimanche, j\'ai senti que j\'avais trouvé ma place. Les services sont inspirants et les gens sont accueillants.',
-      rating: 5,
-      image: '/images/img2.jpg',
-    },
-    {
-      name: 'Marie Rousseau',
-      role: 'Parent',
-      text: 'Les programmes jeunesse sont exceptionnels. Mes enfants aiment venir et apprennent des valeurs importantes.',
-      rating: 5,
-      image: '/images/img3.jpg',
-    },
-    {
-      name: 'Jean Dupuis',
-      role: 'Volontaire',
-      text: 'C\'est une honneur de servir dans cette église. L\'atmosphère et la vision sont vraiment exceptionnelles.',
-      rating: 5,
-      image: '/images/img1.jpg',
-    },
-  ]
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchTestimonials()
+  }, [])
+
+  const fetchTestimonials = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('testimonials')
+        .select('*')
+        .order('order_index', { ascending: true })
+
+      if (error) throw error
+      setTestimonials(data || [])
+    } catch (err) {
+      console.error('Erreur fetch testimonials:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,53 +70,55 @@ export default function Testimonials() {
           </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 gap-8"
-        >
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-              className="bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-shadow duration-300 border-l-4 border-secondary"
-            >
-              <div className="flex items-start gap-4 mb-4">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 shadow-md border-2 border-secondary">
-                  <Image
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex gap-1">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star
-                      key={i}
-                      size={18}
-                      className="fill-secondary text-secondary"
+        {loading ? (
+          <div className="text-center text-primary">Chargement...</div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 gap-8"
+          >
+            {testimonials.map((testimonial) => (
+              <motion.div
+                key={testimonial.id}
+                variants={itemVariants}
+                whileHover={{ y: -5 }}
+                className="bg-white rounded-xl p-8 shadow-lg hover:shadow-2xl transition-shadow duration-300 border-l-4 border-secondary"
+              >
+                <div className="flex items-start gap-4 mb-4">
+                  <div className="relative w-16 h-16 rounded-full overflow-hidden flex-shrink-0 shadow-md border-2 border-secondary">
+                    <Image
+                      src={testimonial.image_url}
+                      alt={testimonial.name}
+                      fill
+                      className="object-cover"
                     />
-                  ))}
+                  </div>
+                  <div className="flex gap-1">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star
+                        key={i}
+                        size={18}
+                        className="fill-secondary text-secondary"
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <p className="text-primary/70 leading-relaxed mb-6 italic">
-                "{testimonial.text}"
-              </p>
+                <p className="text-primary/70 leading-relaxed mb-6 italic">
+                  "{testimonial.text}"
+                </p>
 
-              <div>
-                <p className="font-bold text-primary">{testimonial.name}</p>
-                <p className="text-secondary text-sm">{testimonial.role}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-
+                <div>
+                  <p className="font-bold text-primary">{testimonial.name}</p>
+                  <p className="text-secondary text-sm">{testimonial.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   )

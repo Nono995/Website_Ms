@@ -1,17 +1,41 @@
 'use client'
 
+
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface Member {
+  id: string
+  name: string
+  role: string
+  image_url: string
+}
 
 export default function Community() {
-  const communityMembers = [
-    { name: 'Jean Dupont', role: 'Pasteur Principal', image: '/images/img1.jpg', color: 'from-blue-500 to-blue-600' },
-    { name: 'Marie Martin', role: 'Coordinatrice', image: '/images/img2.jpg', color: 'from-purple-500 to-purple-600' },
-    { name: 'Pierre Leclerc', role: 'Musicien', image: '/images/img3.jpg', color: 'from-green-500 to-green-600' },
-    { name: 'Sophie Bernard', role: 'Enseignante', image: '/images/img1.jpg', color: 'from-pink-500 to-pink-600' },
-    { name: 'Marc Rousseau', role: 'Bénévole', image: '/images/img2.jpg', color: 'from-orange-500 to-orange-600' },
-    { name: 'Lucie Gauthier', role: 'Ministère Jeunesse', image: '/images/img3.jpg', color: 'from-cyan-500 to-cyan-600' },
-  ]
+  const [communityMembers, setCommunityMembers] = useState<Member[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchMembers()
+  }, [])
+
+  const fetchMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('community_members')
+        .select('*')
+        .order('order_index', { ascending: true })
+
+      if (error) throw error
+      setCommunityMembers(data || [])
+    } catch (err) {
+      console.error('Erreur fetch community:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -53,42 +77,46 @@ export default function Community() {
           </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {communityMembers.map((member, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ y: -10 }}
-              className="group"
-            >
-              <div className="relative h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden shadow-xl border border-secondary/30 cursor-pointer group">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary/80 group-hover:to-primary/90 transition-all duration-300" />
+        {loading ? (
+          <div className="text-center text-light">Chargement...</div>
+        ) : (
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {communityMembers.map((member, index) => (
+              <motion.div
+                key={member.id}
+                variants={itemVariants}
+                whileHover={{ y: -10 }}
+                className="group"
+              >
+                <div className="relative h-64 sm:h-72 md:h-80 rounded-2xl overflow-hidden shadow-xl border border-secondary/30 cursor-pointer group">
+                  <Image
+                    src={member.image_url}
+                    alt={member.name}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary/80 group-hover:to-primary/90 transition-all duration-300" />
 
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary/95 via-primary/60 to-transparent p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                  <h3 className="text-xl font-bold text-light mb-1">{member.name}</h3>
-                  <p className="text-secondary font-semibold">{member.role}</p>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-primary/95 via-primary/60 to-transparent p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                    <h3 className="text-xl font-bold text-light mb-1">{member.name}</h3>
+                    <p className="text-secondary font-semibold">{member.role}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mt-4 text-center">
-                <h4 className="text-lg font-bold text-light">{member.name}</h4>
-                <p className="text-secondary">{member.role}</p>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
+                <div className="mt-4 text-center">
+                  <h4 className="text-lg font-bold text-light">{member.name}</h4>
+                  <p className="text-secondary">{member.role}</p>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 30 }}

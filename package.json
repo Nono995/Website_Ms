@@ -10,11 +10,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.86.0",
+    "framer-motion": "^11.0.0",
+    "lucide-react": "latest",
     "next": "^15.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "framer-motion": "^11.0.0",
-    "lucide-react": "latest"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
