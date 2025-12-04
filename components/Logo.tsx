@@ -5,7 +5,7 @@ import Image from 'next/image'
 export default function Logo() {
   return (
     <div className="flex items-center gap-3 -ml-2 md:ml-0">
-      <div className="w-20 h-20 md:w-12 md:h-12 relative flex-shrink-0">
+      <div className="w-20 h-20 md:w-16 md:h-16 relative flex-shrink-0">
         <Image
           src="/images/logo.png"
           alt="Merci Saint-Esprit Église"

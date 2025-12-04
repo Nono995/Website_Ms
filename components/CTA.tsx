@@ -2,8 +2,48 @@
 
 import { motion } from 'framer-motion'
 import { Heart, Gift } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface ContactInfo {
+  address: string
+  city: string
+  phone: string
+  phone_hours: string
+  email: string
+  email_response_time: string
+}
 
 export default function CTA() {
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null)
+
+  useEffect(() => {
+    fetchContactInfo()
+  }, [])
+
+  const fetchContactInfo = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('contact_info')
+        .select('*')
+        .single()
+
+      if (error) throw error
+      setContactInfo(data)
+    } catch (err) {
+      console.error('Erreur fetch contact:', err)
+      // Valeurs par défaut si erreur
+      setContactInfo({
+        address: '123 Rue de la Foi',
+        city: 'Ville, Pays',
+        phone: '+33 (0)1 23 45 67 89',
+        phone_hours: 'Lun-Ven: 09:00-17:00',
+        email: 'contact@graceAndFaith.fr',
+        email_response_time: 'Réponse en 24h'
+      })
+    }
+  }
+
   return (
     <section id="contact" className="py-20 bg-gradient-to-br from-primary via-accent to-primary relative overflow-hidden">
       <div className="absolute inset-0 opacity-20">
@@ -115,18 +155,18 @@ export default function CTA() {
           <div className="grid md:grid-cols-3 gap-6 text-center">
             <div>
               <p className="text-light/70 text-sm mb-2">Adresse</p>
-              <p className="text-light font-semibold">123 Rue de la Foi</p>
-              <p className="text-light/70">Ville, Pays</p>
+              <p className="text-light font-semibold">{contactInfo?.address || '123 Rue de la Foi'}</p>
+              <p className="text-light/70">{contactInfo?.city || 'Ville, Pays'}</p>
             </div>
             <div>
               <p className="text-light/70 text-sm mb-2">Téléphone</p>
-              <p className="text-light font-semibold">+33 (0)1 23 45 67 89</p>
-              <p className="text-light/70">Lun-Ven: 09:00-17:00</p>
+              <p className="text-light font-semibold">{contactInfo?.phone || '+33 (0)1 23 45 67 89'}</p>
+              <p className="text-light/70">{contactInfo?.phone_hours || 'Lun-Ven: 09:00-17:00'}</p>
             </div>
             <div>
               <p className="text-light/70 text-sm mb-2">Email</p>
-              <p className="text-light font-semibold">contact@graceAndFaith.fr</p>
-              <p className="text-light/70">Réponse en 24h</p>
+              <p className="text-light font-semibold">{contactInfo?.email || 'contact@graceAndFaith.fr'}</p>
+              <p className="text-light/70">{contactInfo?.email_response_time || 'Réponse en 24h'}</p>
             </div>
           </div>
 

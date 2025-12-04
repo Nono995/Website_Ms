@@ -3,9 +3,50 @@
 import { motion } from 'framer-motion'
 import { Facebook, Instagram, Youtube, Music } from 'lucide-react'
 import Logo from './Logo'
+import { useState, useEffect } from 'react'
+import { supabase } from '@/lib/supabase'
+
+interface SocialLinks {
+  facebook_url: string
+  instagram_url: string
+  twitter_url: string
+  youtube_url: string
+  tiktok_url: string
+  copyright_text: string
+  developed_by_text: string
+}
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const [socialLinks, setSocialLinks] = useState<SocialLinks | null>(null)
+
+  useEffect(() => {
+    fetchSocialLinks()
+  }, [])
+
+  const fetchSocialLinks = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('social_links')
+        .select('*')
+        .single()
+
+      if (error) throw error
+      setSocialLinks(data)
+    } catch (err) {
+      console.error('Erreur fetch social links:', err)
+      // Valeurs par défaut
+      setSocialLinks({
+        facebook_url: '#',
+        instagram_url: '#',
+        twitter_url: '#',
+        youtube_url: '#',
+        tiktok_url: '#',
+        copyright_text: 'Merci Saint-Esprit Église. Tous droits réservés.',
+        developed_by_text: 'Développé avec ❤️'
+      })
+    }
+  }
 
   return (
     <footer className="bg-primary text-light pt-12 pb-8 relative overflow-hidden">
@@ -25,21 +66,27 @@ export default function Footer() {
           
           <div className="flex gap-4">
             <a
-              href="#"
+              href={socialLinks?.facebook_url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-rose-500/20 hover:bg-rose-500 hover:text-white p-3 rounded-full transition-all duration-300 transform hover:scale-110"
               title="Facebook"
             >
               <Facebook size={20} />
             </a>
             <a
-              href="#"
+              href={socialLinks?.instagram_url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-rose-500/20 hover:bg-rose-500 hover:text-white p-3 rounded-full transition-all duration-300 transform hover:scale-110"
               title="Instagram"
             >
               <Instagram size={20} />
             </a>
             <a
-              href="#"
+              href={socialLinks?.twitter_url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-rose-500/20 hover:bg-rose-500 hover:text-white p-3 rounded-full transition-all duration-300 transform hover:scale-110"
               title="X (Twitter)"
             >
@@ -48,14 +95,18 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="#"
+              href={socialLinks?.youtube_url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-rose-500/20 hover:bg-rose-500 hover:text-white p-3 rounded-full transition-all duration-300 transform hover:scale-110"
               title="YouTube"
             >
               <Youtube size={20} />
             </a>
             <a
-              href="#"
+              href={socialLinks?.tiktok_url || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-rose-500/20 hover:bg-rose-500 hover:text-white p-3 rounded-full transition-all duration-300 transform hover:scale-110"
               title="TikTok"
             >
@@ -71,8 +122,8 @@ export default function Footer() {
           viewport={{ once: true }}
           className="pt-8 text-center text-light/70 text-sm"
         >
-          <p className="mb-2">© {currentYear} Merci Saint-Esprit Église. Tous droits réservés.</p>
-          <p className="text-light/50">Développé avec ❤️</p>
+          <p className="mb-2">© {currentYear} {socialLinks?.copyright_text || 'Merci Saint-Esprit Église. Tous droits réservés.'}</p>
+          <p className="text-light/50">{socialLinks?.developed_by_text || 'Développé avec ❤️'}</p>
         </motion.div>
       </div>
     </footer>
