@@ -4,8 +4,8 @@ import { useState } from 'react'
 
 export default function SetupPage() {
   const [serviceRoleKey, setServiceRoleKey] = useState('')
-  const [adminEmail, setAdminEmail] = useState('nonobrice441@gmail.com')
-  const [adminPassword, setAdminPassword] = useState('Gildas1995@@')
+  const [adminEmail, setAdminEmail] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [logs, setLogs] = useState<string[]>([])
 
@@ -173,11 +173,36 @@ CREATE TABLE IF NOT EXISTS podcasts (
   created_at TIMESTAMP DEFAULT now()
 );
 
-ALTER TABLE biblical_verses DISABLE ROW LEVEL SECURITY;
-ALTER TABLE content_sections DISABLE ROW LEVEL SECURITY;
-ALTER TABLE images DISABLE ROW LEVEL SECURITY;
-ALTER TABLE events DISABLE ROW LEVEL SECURITY;
-ALTER TABLE podcasts DISABLE ROW LEVEL SECURITY;`}
+ALTER TABLE biblical_verses ENABLE ROW LEVEL SECURITY;
+ALTER TABLE content_sections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+ALTER TABLE podcasts ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow public read" ON biblical_verses FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated write" ON biblical_verses FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated update" ON biblical_verses FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated delete" ON biblical_verses FOR DELETE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow public read" ON content_sections FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated write" ON content_sections FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated update" ON content_sections FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated delete" ON content_sections FOR DELETE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow public read" ON images FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated write" ON images FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated update" ON images FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated delete" ON images FOR DELETE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow public read" ON events FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated write" ON events FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated update" ON events FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated delete" ON events FOR DELETE USING (auth.role() = 'authenticated');
+
+CREATE POLICY "Allow public read" ON podcasts FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated write" ON podcasts FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated update" ON podcasts FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Allow authenticated delete" ON podcasts FOR DELETE USING (auth.role() = 'authenticated');`}
             </pre>
           </details>
         </div>

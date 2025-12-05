@@ -1,0 +1,11 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/api/setup-db/route": "/api/setup-db",
+  "/api/import-existing-data/route": "/api/import-existing-data",
+  "/page": "/",
+  "/admin/login/page": "/admin/login",
+  "/admin/import/page": "/admin/import",
+  "/admin/page": "/admin",
+  "/admin/dashboard/page": "/admin/dashboard",
+  "/admin/setup/page": "/admin/setup"
+}

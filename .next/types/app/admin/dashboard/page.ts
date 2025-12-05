@@ -1,4 +1,4 @@
-// File: C:\Users\LEONEL\Downloads\merci-saint-esprit_webSite-main\app\admin\dashboard\page.tsx
+// File: c:\Users\LEONEL\Downloads\merci-saint-esprit_webSite-main\app\admin\dashboard\page.tsx
 import * as entry from '../../../../../app/admin/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -1,4 +1,11 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js"
+  "/api/setup-db/route": "app/api/setup-db/route.js",
+  "/api/import-existing-data/route": "app/api/import-existing-data/route.js",
+  "/page": "app/page.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/import/page": "app/admin/import/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/dashboard/page": "app/admin/dashboard/page.js",
+  "/admin/setup/page": "app/admin/setup/page.js"
 }

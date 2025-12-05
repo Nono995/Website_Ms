@@ -1,4 +1,4 @@
-// File: C:\Users\LEONEL\Downloads\merci-saint-esprit_webSite-main\app\admin\layout.tsx
+// File: c:\Users\LEONEL\Downloads\merci-saint-esprit_webSite-main\app\admin\layout.tsx
 import * as entry from '../../../../app/admin/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
